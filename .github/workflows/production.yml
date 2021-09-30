@@ -2,7 +2,10 @@ name: Release Production
 
 on:
     push:
-        branches: [ prod-version ]
+        tags:
+            - 'production*'
+        paths-ignore:
+            - '**.md'
 
 env:
     GATSBY_CPU_COUNT: 2
@@ -33,120 +36,86 @@ jobs:
               run: |
                   npm ci
                   npm test
-    get-version:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Get version from actions
-          uses: olegtarasov/get-tag@v2.1
-          id: tagName
+    release-production:
+        needs: lint
+        timeout-minutes: 30
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout 🛎️
+              uses: actions/checkout@v2.3.1
 
-    build-and-deploy:
-      needs: get-version
-      runs-on: ubuntu-latest
-      steps:
-        - name: Get version from actions
-          uses: olegtarasov/get-tag@v2.1
-          id: tagName
+            - name: Setup Node
+              uses: actions/setup-node@v2.1.2
+              with:
+                  node-version: '12.x'
 
-        - name: Set version
-          run: echo "GATSBY_DERIV_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+            - name: Set production version
+              run: echo "GATSBY_DERIV_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-        - name: Log values
-          run: echo $GIT_TAG_NAME
-        
-        - name: Log more values
-          run: |
-            echo ${{ steps.tagName.outputs.tag }}
-            echo ${{ steps.tagName.outputs.version }}
+            # - name: Cache dependencies
+            #   uses: actions/cache@v2
+            #   with:
+            #       path: ~/.npm
+            #       key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+            #       restore-keys: |
+            #           ${{ runner.os }}-node-
+            # - name: Cache Gatsby
+            #   id: gatsby-cache-build
+            #   uses: actions/cache@v2
+            #   with:
+            #       path: |
+            #           public
+            #           .cache
+            #       key: ${{ runner.os }}-gatsby-build-${{ github.run_id }}
+            #       restore-keys: |
+            #           ${{ runner.os }}-gatsby-build-
+            - run: npm ci
+            - run: npm run format
+            - run: npm run test
+            - run: npm run build
 
-        - name: Checkout 🛎️
-          uses: actions/checkout@v2.3.1
+            - name: Deploy 🚀
+              uses: JamesIves/github-pages-deploy-action@4.1.5
+              with:
+                branch: gh-pages # The branch the action should deploy to.
+                folder: public # The folder the action should deploy.
+            # - uses: olegtarasov/get-tag@v2.1
+            #   id: tagName
+            #   # For using same tag for staging and production we need to uncomment these two below lines:
+            #   # with:
+            #   #   tagRegex: "production(.*)"
+            # - name: Building docker image 🐳
+            #   run: docker build -t ${{ secrets.DOCKHUB_ORGANISATION }}/deriv-com:latest -t ${{ secrets.DOCKHUB_ORGANISATION }}/deriv-com:$GIT_TAG_NAME .
 
-        - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
-          run: |
-            npm ci
-            npm run build
-
-        - name: Deploy 🚀
-          uses: JamesIves/github-pages-deploy-action@4.1.5
-          with:
-            branch: gh-pages # The branch the action should deploy to.
-            folder: public # The folder the action should deploy.
-    # release-production:
-    #     needs: lint
-    #     timeout-minutes: 30
-    #     runs-on: ubuntu-latest
-    #     steps:
-    #         - name: Checkout 🛎️
-    #           uses: actions/checkout@v2.3.1
-
-    #         - name: Setup Node
-    #           uses: actions/setup-node@v2.1.2
-    #           with:
-    #               node-version: '12.x'
-
-    #         - name: Cache dependencies
-    #           uses: actions/cache@v2
-    #           with:
-    #               path: ~/.npm
-    #               key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-    #               restore-keys: |
-    #                   ${{ runner.os }}-node-
-
-    #         - name: Cache Gatsby
-    #           id: gatsby-cache-build
-    #           uses: actions/cache@v2
-    #           with:
-    #               path: |
-    #                   public
-    #                   .cache
-    #               key: ${{ runner.os }}-gatsby-build-${{ github.run_id }}
-    #               restore-keys: |
-    #                   ${{ runner.os }}-gatsby-build-
-
-    #         - run: npm ci
-    #         - run: npm run format
-    #         - run: npm run test
-    #         - run: npm run build
-    #         - uses: olegtarasov/get-tag@v2.1
-    #           id: tagName
-    #           # For using same tag for staging and production we need to uncomment these two below lines:
-    #           # with:
-    #           #   tagRegex: "production(.*)"
-    #         - name: Building docker image 🐳
-    #           run: docker build -t ${{ secrets.DOCKHUB_ORGANISATION }}/deriv-com:latest -t ${{ secrets.DOCKHUB_ORGANISATION }}/deriv-com:$GIT_TAG_NAME .
-
-    #         - name: Pushing Image to docker hub 🐳
-    #           run: |
-    #               echo ${{ secrets.DOCKERHUB_PASSWORD }}| docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-    #               docker push  ${{ secrets.DOCKHUB_ORGANISATION }}/deriv-com:latest
-    #               docker push  ${{ secrets.DOCKHUB_ORGANISATION }}/deriv-com:$GIT_TAG_NAME
-
-    #         - name: Deploy 🚀
-    #           run: |
-    #               export NAMESPACE="deriv-com-production"
-    #               export SERVICEACCOUNT_TOKEN=${{ secrets.SERVICEACCOUNT_TOKEN }}
-    #               export DOCKERHUB_ORGANISATION=${{ secrets.DOCKERHUB_ORGANISATION }}
-    #               export KUBE_SERVER=${{ secrets.KUBE_SERVER }}
-    #               export CA=${{ secrets.CA }}
-    #               git clone https://github.com/binary-com/devops-ci-scripts
-    #               cd devops-ci-scripts/k8s-build_tools
-    #               echo ${{ secrets.CA_CRT}} | base64 --decode > ca.crt
-    #               ./release.sh deriv-com $GIT_TAG_NAME
-
-    #         - name: Slack Notification 📣
-    #           uses: 8398a7/action-slack@v3
-    #           with:
-    #               status: ${{ job.status }}
-    #               fields: workflow,repo
-    #               if_mention: failure,cancelled
-    #               custom_payload: |
-    #                   {
-    #                     attachments: [{
-    #                       color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
-    #                       text: `Release for *Deriv.com* with version *$GIT_TAG_NAME*`
-    #                     }]
-    #                   }
-    #           env:
-    #               SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
-    #           if: always()
+            # - name: Pushing Image to docker hub 🐳
+            #   run: |
+            #       echo ${{ secrets.DOCKERHUB_PASSWORD }}| docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+            #       docker push  ${{ secrets.DOCKHUB_ORGANISATION }}/deriv-com:latest
+            #       docker push  ${{ secrets.DOCKHUB_ORGANISATION }}/deriv-com:$GIT_TAG_NAME
+            # - name: Deploy 🚀
+            #   run: |
+            #       export NAMESPACE="deriv-com-production"
+            #       export SERVICEACCOUNT_TOKEN=${{ secrets.SERVICEACCOUNT_TOKEN }}
+            #       export DOCKERHUB_ORGANISATION=${{ secrets.DOCKERHUB_ORGANISATION }}
+            #       export KUBE_SERVER=${{ secrets.KUBE_SERVER }}
+            #       export CA=${{ secrets.CA }}
+            #       git clone https://github.com/binary-com/devops-ci-scripts
+            #       cd devops-ci-scripts/k8s-build_tools
+            #       echo ${{ secrets.CA_CRT}} | base64 --decode > ca.crt
+            #       ./release.sh deriv-com $GIT_TAG_NAME
+            # - name: Slack Notification 📣
+            #   uses: 8398a7/action-slack@v3
+            #   with:
+            #       status: ${{ job.status }}
+            #       fields: workflow,repo
+            #       if_mention: failure,cancelled
+            #       custom_payload: |
+            #           {
+            #             attachments: [{
+            #               color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
+            #               text: `Release for *Deriv.com* with version *$GIT_TAG_NAME*`
+            #             }]
+            #           }
+            #   env:
+            #       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+            #   if: always()

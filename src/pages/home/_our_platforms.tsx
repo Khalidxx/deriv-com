@@ -154,10 +154,7 @@ const OurPlatforms = (): React.ReactElement => {
                 </Text>
                 <MainContent>
                     <SelectorContainer>
-                        <PlatformSelector
-                            platforms={platforms}
-                            selected_index={Object.keys(images).indexOf('platforms_dtrader')}
-                        />
+                        <PlatformSelector platforms={platforms} selected_index={3} />
                     </SelectorContainer>
                     <PlatformImageWrapper>
                         <QueryImage data={images['platforms_dtrader']} alt="dtrader" />

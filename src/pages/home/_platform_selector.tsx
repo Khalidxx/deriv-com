@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { StyledLink } from 'components/elements'
+import { StyledLink, Text } from 'components/elements'
 
 export type Platform = {
     title: string
@@ -12,6 +12,7 @@ export type Platform = {
 type PlatformSelectorProps = {
     platforms: Array<Platform>
     selected_index: number
+    selectIndex: React.Dispatch<React.SetStateAction<number>>
 }
 
 const ContentContainer = styled.div`
@@ -25,11 +26,6 @@ const UnselectedPlatform = styled.div`
     display: flex;
     align-items: center;
     margin: 2rem;
-    span {
-        font-weight: 700;
-        font-size: 2rem;
-        opacity: 0.3;
-    }
 
     img {
         width: 32px;
@@ -41,7 +37,6 @@ const UnselectedPlatform = styled.div`
 
 const SelectedPlatform = styled.div`
     display: flex;
-    justify-content: space-around;
     align-items: flex-start;
     width: 384px;
     height: 200px;
@@ -53,7 +48,8 @@ const SelectedPlatform = styled.div`
     img {
         width: 4rem;
         height: 4rem;
-        /* margin-right: 1rem; */
+        margin-right: 2.4rem;
+        margin-left: 1.6rem;
     }
 `
 
@@ -61,44 +57,52 @@ const CardDetails = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    padding-top: 1rem;
+`
 
-    span {
-        font-weight: 700;
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-    }
+const SelectedTitle = styled.span`
+    font-weight: 700;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+`
 
-    p {
-        font-size: 2rem;
-        line-height: 3rem;
-        font-weight: 400;
-        max-width: 250px;
-        margin-bottom: 2.5rem;
-    }
+const UnselectedTitle = styled.span`
+    font-weight: 700;
+    font-size: 2rem;
+    opacity: 0.3;
+`
+
+const Description = styled(Text)`
+    font-size: 2rem;
+    line-height: 3rem;
+    font-weight: 400;
+    max-width: 290px;
+    margin-bottom: 2.5rem;
 `
 
 export const PlatformSelector = ({
     platforms,
     selected_index,
+    selectIndex,
 }: PlatformSelectorProps): React.ReactElement => {
     return (
         <ContentContainer>
             {platforms.map((platform, index) =>
                 index === selected_index ? (
-                    <SelectedPlatform>
+                    <SelectedPlatform key={index}>
                         <img src={platform.icon} alt="platform" />
                         <CardDetails>
-                            <span>{platform.title}</span>
-                            <p>{platform.description}</p>
-                            <StyledLink href={platform.learn_more_link}>
+                            <SelectedTitle>{platform.title}</SelectedTitle>
+                            <Description>{platform.description}</Description>
+                            <StyledLink to={platform.learn_more_link} weight="350">
                                 Learn more {'>'}
                             </StyledLink>
                         </CardDetails>
                     </SelectedPlatform>
                 ) : (
-                    <UnselectedPlatform key={index}>
+                    <UnselectedPlatform key={index} onClick={() => selectIndex(index)}>
                         <img src={platform.icon} alt="platform" />
-                        <span>{platform.title}</span>
+                        <UnselectedTitle>{platform.title}</UnselectedTitle>
                     </UnselectedPlatform>
                 ),
             )}

@@ -5,6 +5,7 @@ import { PlatformSelector, Platform } from './_platform_selector'
 import { localize } from 'components/localization'
 import { Header, QueryImage, Text } from 'components/elements'
 import { Container, SectionContainer } from 'components/containers'
+import device from 'themes/device.js'
 //SVG
 import DTraderIcon from 'images/svg/dtrader/dtrader-icon.svg'
 import DMT5Icon from 'images/svg/dmt5/dmt5-icon.svg'
@@ -74,7 +75,10 @@ const query = graphql`
         platforms_mt5: file(relativePath: { eq: "home/platforms_mt5.png" }) {
             ...fadeIn
         }
-        platforms_smarttrader: file(relativePath: { eq: "home/platforms_smarttrader.png" }) {
+        platforms_deriv_go: file(relativePath: { eq: "home/platforms_deriv_go.png" }) {
+            ...fadeIn
+        }
+        platforms_derivx: file(relativePath: { eq: "home/platforms_derivx.png" }) {
             ...fadeIn
         }
         platforms_dbot: file(relativePath: { eq: "home/platforms_dbot.png" }) {
@@ -83,10 +87,7 @@ const query = graphql`
         platforms_binary_bot: file(relativePath: { eq: "home/platforms_binary_bot.png" }) {
             ...fadeIn
         }
-        platforms_deriv_go: file(relativePath: { eq: "home/platforms_deriv_go.png" }) {
-            ...fadeIn
-        }
-        platforms_derivx: file(relativePath: { eq: "home/platforms_derivx.png" }) {
+        platforms_smarttrader: file(relativePath: { eq: "home/platforms_smarttrader.png" }) {
             ...fadeIn
         }
         platforms_api: file(relativePath: { eq: "home/platforms_api.png" }) {
@@ -114,11 +115,21 @@ const MainContent = styled(Container)`
     padding-right: 0;
     display: flex;
     justify-content: space-between;
+
+    @media ${device.tablet} {
+        padding: 1rem;
+        padding-top: 3rem;
+        justify-content: center;
+    }
 `
 
 const SelectorContainer = styled.div`
     width: 35vw;
     padding-right: 3rem;
+
+    @media ${device.tablet} {
+        display: none;
+    }
 `
 
 const PlatformImageWrapper = styled.div`
@@ -126,6 +137,11 @@ const PlatformImageWrapper = styled.div`
     display: flex;
     align-items: flex-end;
     margin-right: 3rem;
+
+    @media ${device.tablet} {
+        width: 90vw;
+        margin-right: 0;
+    }
 `
 
 const OurPlatforms = (): React.ReactElement => {
@@ -139,6 +155,8 @@ const OurPlatforms = (): React.ReactElement => {
     //     platforms_derivx,
     //     platforms_api,
     // }
+
+    const [selectedIndex, setSelectedIndex] = React.useState(3)
 
     const images = useStaticQuery(query)
     return (
@@ -154,10 +172,17 @@ const OurPlatforms = (): React.ReactElement => {
                 </Text>
                 <MainContent>
                     <SelectorContainer>
-                        <PlatformSelector platforms={platforms} selected_index={3} />
+                        <PlatformSelector
+                            platforms={platforms}
+                            selected_index={selectedIndex}
+                            selectIndex={setSelectedIndex}
+                        />
                     </SelectorContainer>
                     <PlatformImageWrapper>
-                        <QueryImage data={images['platforms_dtrader']} alt="dtrader" />
+                        <QueryImage
+                            data={images[Object.keys(images)[selectedIndex]]}
+                            alt={Object.keys(images)[selectedIndex]}
+                        />
                     </PlatformImageWrapper>
                 </MainContent>
             </ContentWrapper>

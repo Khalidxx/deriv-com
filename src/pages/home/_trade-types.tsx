@@ -130,6 +130,9 @@ const ImageWrapper = styled(Flex)`
         width: 100%;
         height: auto;
     }
+    @media ${device.mobileS} {
+        width: 100%;
+    }
 `
 const ContentWrapper = styled(Flex)<{ $visibility }>`
     flex-direction: column;

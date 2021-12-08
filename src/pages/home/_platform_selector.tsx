@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { StyledLink, Text } from 'components/elements'
+import device from 'themes/device.js'
 
 export type Platform = {
     title: string
@@ -45,12 +46,13 @@ const SelectedPlatform = styled.div`
     background: #ffffff;
     box-shadow: 0px 16px 20px rgba(131, 131, 131, 0.15), 0px 0px 20px rgba(131, 131, 131, 0.15);
     border-radius: 6px;
-    img {
-        width: 4rem;
-        height: 4rem;
-        margin-right: 2.4rem;
-        margin-left: 1.6rem;
-    }
+`
+
+const PlatformIcon = styled.img`
+    width: 4rem;
+    height: 4rem;
+    margin-right: 2.4rem;
+    margin-left: 1.6rem;
 `
 
 const CardDetails = styled.div`
@@ -58,12 +60,20 @@ const CardDetails = styled.div`
     flex-direction: column;
     align-items: flex-start;
     padding-top: 1rem;
+
+    @media ${device.tablet} {
+        padding-top: 0.5rem;
+    }
 `
 
 const SelectedTitle = styled.span`
     font-weight: 700;
     font-size: 2.5rem;
     margin-bottom: 1rem;
+
+    @media ${device.tablet} {
+        font-size: 2rem;
+    }
 `
 
 const UnselectedTitle = styled.span`
@@ -78,7 +88,40 @@ const Description = styled(Text)`
     font-weight: 400;
     max-width: 290px;
     margin-bottom: 2.5rem;
+
+    @media ${device.tablet} {
+        font-size: 1.6rem;
+    }
 `
+
+const LinkWrapper = styled(StyledLink)`
+    @media ${device.tablet} {
+        width: calc(100% - 8rem);
+        text-align: center;
+    }
+`
+
+export const PlatformDetails = ({
+    title,
+    icon,
+    description,
+    learn_more_link,
+}: Platform): React.ReactElement => {
+    return (
+        <>
+            <PlatformIcon src={icon} alt="platform" />
+            <CardDetails>
+                <SelectedTitle>{title}</SelectedTitle>
+                <Description>{description}</Description>
+                <LinkWrapper>
+                    <StyledLink to={learn_more_link} weight="350">
+                        Learn more {'>'}
+                    </StyledLink>
+                </LinkWrapper>
+            </CardDetails>
+        </>
+    )
+}
 
 export const PlatformSelector = ({
     platforms,
@@ -90,18 +133,16 @@ export const PlatformSelector = ({
             {platforms.map((platform, index) =>
                 index === selected_index ? (
                     <SelectedPlatform key={index}>
-                        <img src={platform.icon} alt="platform" />
-                        <CardDetails>
-                            <SelectedTitle>{platform.title}</SelectedTitle>
-                            <Description>{platform.description}</Description>
-                            <StyledLink to={platform.learn_more_link} weight="350">
-                                Learn more {'>'}
-                            </StyledLink>
-                        </CardDetails>
+                        <PlatformDetails
+                            title={platform.title}
+                            icon={platform.icon}
+                            description={platform.description}
+                            learn_more_link={platform.learn_more_link}
+                        />
                     </SelectedPlatform>
                 ) : (
                     <UnselectedPlatform key={index} onClick={() => selectIndex(index)}>
-                        <img src={platform.icon} alt="platform" />
+                        <PlatformIcon src={platform.icon} alt="platform" />
                         <UnselectedTitle>{platform.title}</UnselectedTitle>
                     </UnselectedPlatform>
                 ),

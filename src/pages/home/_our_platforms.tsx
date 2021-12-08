@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { graphql, useStaticQuery } from 'gatsby'
-import { PlatformSelector, Platform } from './_platform_selector'
+import { PlatformSelector, Platform, PlatformDetails } from './_platform_selector'
 import { localize } from 'components/localization'
 import { Header, QueryImage, Text } from 'components/elements'
 import { Container, SectionContainer } from 'components/containers'
@@ -108,6 +108,13 @@ const ContentWrapper = styled(Container)`
     }
 `
 
+const SubTitle = styled(Text)`
+    @media ${device.tablet} {
+        margin: 1.6rem;
+        text-align: center;
+    }
+`
+
 const MainContent = styled(Container)`
     height: 100%;
     width: 100%;
@@ -119,6 +126,7 @@ const MainContent = styled(Container)`
     @media ${device.tablet} {
         padding: 1rem;
         padding-top: 3rem;
+        flex-direction: column;
         justify-content: center;
     }
 `
@@ -144,6 +152,16 @@ const PlatformImageWrapper = styled.div`
     }
 `
 
+const MobileContainer = styled.div`
+    @media ${device.desktop} {
+        display: none;
+    }
+    @media ${device.tablet} {
+        display: flex;
+        margin-top: 2rem;
+    }
+`
+
 const OurPlatforms = (): React.ReactElement => {
     // const {
     //     platforms_dtrader,
@@ -165,11 +183,11 @@ const OurPlatforms = (): React.ReactElement => {
                 <Header as="h2" size="4.8rem" type="heading-1" weight="700">
                     {localize('Our platforms')}
                 </Header>
-                <Text size="2.4rem">
+                <SubTitle size="2.4rem">
                     {localize(
                         'Choose from 8 powerful platforms — each designed with your needs in mind',
                     )}
-                </Text>
+                </SubTitle>
                 <MainContent>
                     <SelectorContainer>
                         <PlatformSelector
@@ -184,6 +202,14 @@ const OurPlatforms = (): React.ReactElement => {
                             alt={Object.keys(images)[selectedIndex]}
                         />
                     </PlatformImageWrapper>
+                    <MobileContainer>
+                        <PlatformDetails
+                            title={platforms[selectedIndex].title}
+                            icon={platforms[selectedIndex].icon}
+                            description={platforms[selectedIndex].description}
+                            learn_more_link={platforms[selectedIndex].learn_more_link}
+                        />
+                    </MobileContainer>
                 </MainContent>
             </ContentWrapper>
         </StyledSection>

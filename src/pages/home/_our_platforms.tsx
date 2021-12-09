@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { graphql, useStaticQuery } from 'gatsby'
 import { PlatformSelector, Platform, PlatformDetails } from './_platform_selector'
 import { localize } from 'components/localization'
-import { Header, QueryImage, Text } from 'components/elements'
+import { Header, NavigationDots, QueryImage, StyledLink, Text } from 'components/elements'
 import { Container, SectionContainer } from 'components/containers'
 import device from 'themes/device.js'
 //SVG
@@ -15,6 +15,13 @@ import DBotIcon from 'images/svg/dbot/dbot-icon.svg'
 import BinaryBotIcon from 'images/svg/binarybot-icon.svg'
 import SmartTraderIcon from 'images/svg/custom/smarttrader.svg'
 import APIIcon from 'images/svg/dmt5/dmt5-icon.svg'
+import Browser from 'images/svg/app-download/web-browser.svg'
+import AppStore from 'images/svg/app-download/app-store.svg'
+import GooglePlay from 'images/svg/app-download/google-play.svg'
+import Linux from 'images/svg/app-download/linux.svg'
+import APK from 'images/svg/app-download/apk.svg'
+
+const downloadImages: Array<string> = [Browser, AppStore, GooglePlay, Linux, APK]
 
 const platforms: Array<Platform> = [
     {
@@ -22,48 +29,81 @@ const platforms: Array<Platform> = [
         icon: DTraderIcon,
         description: 'Our flagship app for trading options, multipliers & spreads.',
         learn_more_link: '#',
+        download_links: {
+            Browser: 'https://app.deriv.com/',
+        },
     },
     {
         title: 'DMT5',
         icon: DMT5Icon,
         description: 'The all-in-one FX & CFD trading platform.',
         learn_more_link: '#',
+        download_links: {
+            Browser: 'https://app.deriv.com/dmt5',
+            AppStore:
+                'https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/MetaTrader5.dmg',
+            GooglePlay:
+                'https://download.mql5.com/cdn/mobile/mt5/android?server=Deriv-Demo,Deriv-Server',
+            Linux: 'https://www.metatrader5.com/en/terminal/help/start_advanced/install_linux',
+        },
     },
     {
         title: 'Deriv GO',
         icon: DerivGOIcon,
         description: 'Our best trading experience on your mobile.',
         learn_more_link: '#',
+        download_links: {
+            GooglePlay: 'https://play.google.com/store/apps/details?id=com.deriv.app&hl=en&gl=US',
+            AppStore: 'https://apps.apple.com/ug/app/deriv-go/id1550561298',
+            APK: '#',
+        },
     },
     {
         title: 'DerivX',
         icon: DerivXIcon,
         description: 'The multi-asset trading platform to fit your style.',
         learn_more_link: '#',
+        download_links: {
+            GooglePlay: 'https://play.google.com/store/apps/details?id=com.deriv.dx&hl=en&gl=US',
+            AppStore: 'https://apps.apple.com/cg/app/deriv-x/id1563337503',
+            Browser: 'https://app.deriv.com/derivx',
+        },
     },
     {
         title: 'DBot',
         icon: DBotIcon,
         description: 'Automate your trading. No coding required.',
         learn_more_link: '#',
+        download_links: {
+            Browser: 'https://app.deriv.com/bot',
+        },
     },
     {
         title: 'Binary Bot',
         icon: BinaryBotIcon,
         description: 'Our legacy automated trading platform.',
         learn_more_link: '#',
+        download_links: {
+            Browser: 'https://bot.binary.com/',
+        },
     },
     {
         title: 'SmartTrader',
         icon: SmartTraderIcon,
         description: 'Our legacy options trading platform.',
         learn_more_link: '#',
+        download_links: {
+            Browser: 'https://smarttrader.deriv.com/',
+        },
     },
     {
         title: 'API',
         icon: APIIcon,
         description: 'Build your own apps with our API.',
         learn_more_link: '#',
+        download_links: {
+            Browser: 'https://api.deriv.com/',
+        },
     },
 ]
 
@@ -120,20 +160,25 @@ const MainContent = styled(Container)`
     width: 100%;
     padding: 5rem;
     padding-right: 0;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: 35vw 1fr;
 
     @media ${device.tablet} {
         padding: 1rem;
         padding-top: 3rem;
+        display: flex;
         flex-direction: column;
         justify-content: center;
     }
 `
 
 const SelectorContainer = styled.div`
-    width: 35vw;
+    grid-column: 1;
+    grid-row: 1 / 5;
+    /* width: 35vw; */
     padding-right: 3rem;
+    /* padding-left: 4rem; */
 
     @media ${device.tablet} {
         display: none;
@@ -141,7 +186,9 @@ const SelectorContainer = styled.div`
 `
 
 const PlatformImageWrapper = styled.div`
-    width: 65vw;
+    grid-column: 2;
+    grid-row: 1 / 4;
+    width: 60vw;
     display: flex;
     align-items: flex-end;
     margin-right: 3rem;
@@ -152,15 +199,44 @@ const PlatformImageWrapper = styled.div`
     }
 `
 
+const PlatformDetailsWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-top: 2rem;
+`
+
 const MobileContainer = styled.div`
     @media ${device.desktop} {
         display: none;
     }
     @media ${device.tablet} {
         display: flex;
+        flex-direction: column;
         margin-top: 2rem;
     }
 `
+
+const DownloadLinks = styled.div`
+    grid-column: 2;
+    grid-row: 4 / 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 3.2rem 3.8rem;
+`
+
+const DownloadLink = styled(StyledLink)`
+    margin: 0.4rem;
+`
+
+const getIcon = (platformType: string): string => {
+    if (platformType === 'Browser') return Browser
+    else if (platformType === 'AppStore') return AppStore
+    else if (platformType === 'GooglePlay') return GooglePlay
+    else if (platformType === 'Linux') return Linux
+    else if (platformType === 'APK') return APK
+}
 
 const OurPlatforms = (): React.ReactElement => {
     // const {
@@ -203,13 +279,36 @@ const OurPlatforms = (): React.ReactElement => {
                         />
                     </PlatformImageWrapper>
                     <MobileContainer>
-                        <PlatformDetails
-                            title={platforms[selectedIndex].title}
-                            icon={platforms[selectedIndex].icon}
-                            description={platforms[selectedIndex].description}
-                            learn_more_link={platforms[selectedIndex].learn_more_link}
+                        <NavigationDots
+                            count={platforms.length}
+                            selected_index={selectedIndex}
+                            selected_color="--color-red-1"
+                            unselected_color="--color-grey-34"
+                            onNavigate={setSelectedIndex}
                         />
+                        <PlatformDetailsWrapper>
+                            <PlatformDetails
+                                title={platforms[selectedIndex].title}
+                                icon={platforms[selectedIndex].icon}
+                                description={platforms[selectedIndex].description}
+                                learn_more_link={platforms[selectedIndex].learn_more_link}
+                            />
+                        </PlatformDetailsWrapper>
                     </MobileContainer>
+                    <DownloadLinks>
+                        {Object.keys(platforms[selectedIndex].download_links).map(
+                            (platformType, index) => (
+                                <DownloadLink
+                                    key={index}
+                                    to={platforms[selectedIndex].download_links[platformType]}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <img src={getIcon(platformType)} alt={platformType} />
+                                </DownloadLink>
+                            ),
+                        )}
+                    </DownloadLinks>
                 </MainContent>
             </ContentWrapper>
         </StyledSection>

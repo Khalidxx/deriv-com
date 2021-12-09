@@ -8,6 +8,13 @@ export type Platform = {
     icon: string
     description: string
     learn_more_link: string
+    download_links?: {
+        Browser?: string
+        AppStore?: string
+        GooglePlay?: string
+        Linux?: string
+        APK?: string
+    }
 }
 
 type PlatformSelectorProps = {

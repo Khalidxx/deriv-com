@@ -24,16 +24,20 @@ type PlatformSelectorProps = {
 }
 
 const ContentContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 3fr 1fr 1fr 1fr 1fr;
+    @media ${device.laptopM} {
+        grid-template-rows: 1fr 1fr 1fr 3fr 1fr 1fr 1fr 1fr;
+    }
 `
 
 const UnselectedPlatform = styled.div`
+    align-self: start;
     display: flex;
     align-items: center;
+    width: 160px;
     margin: 2rem;
+    margin-left: 0;
 
     img {
         width: 32px;
@@ -41,9 +45,15 @@ const UnselectedPlatform = styled.div`
         margin-right: 1rem;
         opacity: 0.3;
     }
+
+    @media ${device.laptopM} {
+        transform: scale(0.9);
+        margin-left: 0;
+    }
 `
 
 const SelectedPlatform = styled.div`
+    grid-row: 4;
     display: flex;
     align-items: flex-start;
     width: 384px;
@@ -53,6 +63,25 @@ const SelectedPlatform = styled.div`
     background: #ffffff;
     box-shadow: 0px 16px 20px rgba(131, 131, 131, 0.15), 0px 0px 20px rgba(131, 131, 131, 0.15);
     border-radius: 6px;
+    @media ${device.laptopM} {
+        width: 345px;
+        height: 180px;
+        ${Text} {
+            font-size: 1.6rem;
+            line-height: 2.2rem;
+        }
+        margin: 0.5rem;
+        align-self: center;
+    }
+
+    @media ${device.tabletL} {
+        width: 300px;
+        height: 140px;
+        /* ${Text} {
+            font-size: 1.4rem;
+            line-height: 2rem;
+        } */
+    }
 `
 
 const PlatformIcon = styled.img`

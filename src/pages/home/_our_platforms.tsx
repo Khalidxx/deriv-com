@@ -21,8 +21,6 @@ import GooglePlay from 'images/svg/app-download/google-play.svg'
 import Linux from 'images/svg/app-download/linux.svg'
 import APK from 'images/svg/app-download/apk.svg'
 
-const downloadImages: Array<string> = [Browser, AppStore, GooglePlay, Linux, APK]
-
 const platforms: Array<Platform> = [
     {
         title: 'DTrader',
@@ -175,10 +173,9 @@ const MainContent = styled(Container)`
 
 const SelectorContainer = styled.div`
     grid-column: 1;
-    grid-row: 1 / 5;
-    /* width: 35vw; */
+    grid-row: 1 / 7;
+    align-self: start;
     padding-right: 3rem;
-    /* padding-left: 4rem; */
 
     @media ${device.tablet} {
         display: none;
@@ -187,7 +184,7 @@ const SelectorContainer = styled.div`
 
 const PlatformImageWrapper = styled.div`
     grid-column: 2;
-    grid-row: 1 / 4;
+    grid-row: 2 / 5;
     width: 60vw;
     display: flex;
     align-items: flex-end;
@@ -218,7 +215,7 @@ const MobileContainer = styled.div`
 
 const DownloadLinks = styled.div`
     grid-column: 2;
-    grid-row: 4 / 5;
+    grid-row: 5 / 6;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -9,12 +9,12 @@ import device from 'themes/device.js'
 //SVG
 import DTraderIcon from 'images/svg/dtrader/dtrader-icon.svg'
 import DMT5Icon from 'images/svg/dmt5/dmt5-icon.svg'
-import DerivGOIcon from 'images/svg/dmt5/dmt5-icon.svg'
-import DerivXIcon from 'images/svg/deriv-x/derivx-logo-light.svg'
+import DerivGOIcon from 'images/svg/deriv-go/deriv-go-logo.svg'
+import DerivXIcon from 'images/svg/deriv-x/derivx-logo.svg'
 import DBotIcon from 'images/svg/dbot/dbot-icon.svg'
 import BinaryBotIcon from 'images/svg/binarybot-icon.svg'
 import SmartTraderIcon from 'images/svg/custom/smarttrader.svg'
-import APIIcon from 'images/svg/dmt5/dmt5-icon.svg'
+import APIIcon from 'images/svg/api-logo.svg'
 import Browser from 'images/svg/app-download/web-browser.svg'
 import AppStore from 'images/svg/app-download/app-store.svg'
 import GooglePlay from 'images/svg/app-download/google-play.svg'
@@ -26,7 +26,7 @@ const platforms: Array<Platform> = [
         title: 'DTrader',
         icon: DTraderIcon,
         description: 'Our flagship app for trading options, multipliers & spreads.',
-        learn_more_link: '#',
+        learn_more_link: '/dtrader/',
         download_links: {
             Browser: 'https://app.deriv.com/',
         },
@@ -35,7 +35,7 @@ const platforms: Array<Platform> = [
         title: 'DMT5',
         icon: DMT5Icon,
         description: 'The all-in-one FX & CFD trading platform.',
-        learn_more_link: '#',
+        learn_more_link: '/dmt5/',
         download_links: {
             Browser: 'https://app.deriv.com/dmt5',
             AppStore:
@@ -60,7 +60,7 @@ const platforms: Array<Platform> = [
         title: 'DerivX',
         icon: DerivXIcon,
         description: 'The multi-asset trading platform to fit your style.',
-        learn_more_link: '#',
+        learn_more_link: '/derivx/',
         download_links: {
             GooglePlay: 'https://play.google.com/store/apps/details?id=com.deriv.dx&hl=en&gl=US',
             AppStore: 'https://apps.apple.com/cg/app/deriv-x/id1563337503',
@@ -71,7 +71,7 @@ const platforms: Array<Platform> = [
         title: 'DBot',
         icon: DBotIcon,
         description: 'Automate your trading. No coding required.',
-        learn_more_link: '#',
+        learn_more_link: '/dbot/',
         download_links: {
             Browser: 'https://app.deriv.com/bot',
         },
@@ -80,7 +80,7 @@ const platforms: Array<Platform> = [
         title: 'Binary Bot',
         icon: BinaryBotIcon,
         description: 'Our legacy automated trading platform.',
-        learn_more_link: '#',
+        learn_more_link: 'https://bot.deriv.com/',
         download_links: {
             Browser: 'https://bot.binary.com/',
         },
@@ -89,7 +89,7 @@ const platforms: Array<Platform> = [
         title: 'SmartTrader',
         icon: SmartTraderIcon,
         description: 'Our legacy options trading platform.',
-        learn_more_link: '#',
+        learn_more_link: 'https://smarttrader.deriv.com/en/trading.html',
         download_links: {
             Browser: 'https://smarttrader.deriv.com/',
         },
@@ -200,9 +200,11 @@ const PlatformDetailsWrapper = styled.div`
     display: flex;
     flex-direction: row;
     margin-top: 2rem;
+    width: 100vw;
 `
 
 const MobileContainer = styled.div`
+    max-width: 100vw;
     @media ${device.desktop} {
         display: none;
     }

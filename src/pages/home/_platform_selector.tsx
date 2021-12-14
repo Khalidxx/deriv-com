@@ -1,5 +1,6 @@
 import React from 'react'
-import styled from 'styled-components'
+import { useEmblaCarousel } from 'embla-carousel/react'
+import styled, { css } from 'styled-components'
 import { StyledLink, Text } from 'components/elements'
 import device from 'themes/device.js'
 
@@ -30,7 +31,14 @@ const ContentContainer = styled.div`
         grid-template-rows: 1fr 1fr 1fr 3fr 1fr 1fr 1fr 1fr;
     }
 `
-
+// ${(props) => {
+//     if (props.elementIndex == props.selectedIndex) {
+//         return css`
+//             order: 4;
+//         `
+//     }
+// }}
+// order: ${(props) => (props.elementIndex + Math.abs(4 - props.elementIndex)) % 8};
 const UnselectedPlatform = styled.div`
     align-self: start;
     display: flex;
@@ -38,7 +46,7 @@ const UnselectedPlatform = styled.div`
     width: 160px;
     margin: 2rem;
     margin-left: 0;
-
+    cursor: pointer;
     img {
         width: 32px;
         height: 32px;
@@ -164,6 +172,10 @@ export const PlatformSelector = ({
     selected_index,
     selectIndex,
 }: PlatformSelectorProps): React.ReactElement => {
+    // const handleSelect = (index: number): void => {
+    //     selectIndex(index);
+
+    // }
     return (
         <ContentContainer>
             {platforms.map((platform, index) =>

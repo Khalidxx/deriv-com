@@ -1,6 +1,5 @@
 import React from 'react'
-import { useEmblaCarousel } from 'embla-carousel/react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { StyledLink, Text } from 'components/elements'
 import device from 'themes/device.js'
 
@@ -27,18 +26,11 @@ type PlatformSelectorProps = {
 const ContentContainer = styled.div`
     display: grid;
     grid-template-rows: 1fr 1fr 1fr 3fr 1fr 1fr 1fr 1fr;
-    @media ${device.laptopM} {
-        grid-template-rows: 1fr 1fr 1fr 3fr 1fr 1fr 1fr 1fr;
+    @media ${device.tabletL} {
+        transform: scale(0.8);
     }
 `
-// ${(props) => {
-//     if (props.elementIndex == props.selectedIndex) {
-//         return css`
-//             order: 4;
-//         `
-//     }
-// }}
-// order: ${(props) => (props.elementIndex + Math.abs(4 - props.elementIndex)) % 8};
+
 const UnselectedPlatform = styled.div`
     align-self: start;
     display: flex;
@@ -85,10 +77,6 @@ const SelectedPlatform = styled.div`
     @media ${device.tabletL} {
         width: 300px;
         height: 140px;
-        /* ${Text} {
-            font-size: 1.4rem;
-            line-height: 2rem;
-        } */
     }
 `
 
@@ -106,6 +94,7 @@ const CardDetails = styled.div`
     padding-top: 1rem;
 
     @media ${device.tablet} {
+        width: 230px;
         padding-top: 0.5rem;
     }
 `
@@ -133,7 +122,7 @@ const Description = styled(Text)`
     max-width: 290px;
     margin-bottom: 2.5rem;
 
-    @media ${device.tablet} {
+    @media ${device.mobileL} {
         font-size: 1.6rem;
     }
 `
@@ -172,10 +161,6 @@ export const PlatformSelector = ({
     selected_index,
     selectIndex,
 }: PlatformSelectorProps): React.ReactElement => {
-    // const handleSelect = (index: number): void => {
-    //     selectIndex(index);
-
-    // }
     return (
         <ContentContainer>
             {platforms.map((platform, index) =>

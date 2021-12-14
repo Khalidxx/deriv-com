@@ -136,6 +136,10 @@ const query = graphql`
 
 const StyledSection = styled(SectionContainer)`
     background: #f9fbff;
+    height: 1065px;
+    @media ${device.tabletL} {
+        height: 840px;
+    }
 `
 
 const ContentWrapper = styled(Container)`
@@ -193,12 +197,34 @@ const PlatformImageWrapper = styled.div`
     @media ${device.tablet} {
         width: 90vw;
         margin-right: 0;
+        height: 300px;
+        align-self: center;
+        justify-content: center;
+        img {
+            max-height: 300px;
+        }
+    }
+    @media ${device.tabletS} {
+        height: 250px;
+        img {
+            max-height: 250px;
+        }
+    }
+    @media ${device.mobileL} {
+        height: 200px;
+        img {
+            max-height: 200px;
+        }
+    }
+    @media ${device.mobileM} {
+        height: 160px;
     }
 `
 
 const PlatformDetailsWrapper = styled.div`
     display: flex;
     flex-direction: row;
+    justify-content: center;
     margin-top: 2rem;
     width: 100vw;
 `
@@ -253,7 +279,7 @@ const OurPlatforms = (): React.ReactElement => {
 
     const images = useStaticQuery(query)
     return (
-        <StyledSection height="1065px">
+        <StyledSection>
             <ContentWrapper direction="column">
                 <Header as="h2" size="4.8rem" type="heading-1" weight="700">
                     {localize('Our platforms')}
